@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Convert Image to Data URI</title>
+</head>
+<body>
+	<input type="file" id="file-input">
+	<br>
+	<img id="image-preview">
+	<br>
+	<textarea id="data-uri"></textarea>
+
+	<script>
+		// 获取DOM元素
+		const fileInput = document.getElementById('file-input');
+		const imagePreview = document.getElementById('image-preview');
+		const dataUriTextarea = document.getElementById('data-uri');
+
+		// 当文件上传时，将图像预览添加到页面上
+		fileInput.addEventListener('change', (event) => {
+			const file = event.target.files[0];
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				// 将Data URL设置为img元素的src属性
+				imagePreview.src = event.target.result;
+				// 将Data URL设置为textarea元素的value属性
+				dataUriTextarea.value = event.target.result;
+			};
+			reader.readAsDataURL(file);
+		});
+	</script>
+</body>
+</html>

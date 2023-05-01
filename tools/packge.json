@@ -1,0 +1,12 @@
+{
+    "name":"tools",
+    "version":"1.0.0",
+    "main":"index.js",
+    "description":"提供格式化时间,htmlescape相关的功能",
+    "keywords":[
+        "itheima",
+        "dataFormat",
+        "escape"
+    ],
+    "license":"ISC"
+}

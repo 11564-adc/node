@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="jquery.min.js"></script>
+</head>
+<body>
+    登录
+    <form  id="login">
+        <input type="text" name="username">
+        <input type="password" name="password">
+<input type="submit" >
+       <div id="result"></div>
+    </form>
+    <br>
+ 注册
+    <form  id="register">
+        <input type="text" name="username">
+        <input type="password" name="password">
+        <input type="submit">
+    </form>
+    获取用户信息
+    <button id="get">获取</button>
+       <div id="results" >
+
+       </div>
+       <br>
+    更新用户信息
+    <form  id="update" method="post">
+      <input type="text" name="id">
+      <input type="text" name="username">
+      <input type="password" name="password">
+      <input type="text" name="email">
+      <input type="text" name="nickname">
+      <input type="submit" id="up">
+  </form>
+    更换头像
+    <img  >
+    <input type="file" id="file">
+    <input type="submit"  id="sub_pic">
+    <script>
+        //注册，具体实现还需要在前端进行验证，这里仅仅是验证效果
+        $('#register').on('submit',function(e){
+             e.preventDefault();
+             var formData=$('#register').serialize();
+             $.ajax({
+                type:'POST',
+                url: 'http://localhost:3007/api/reguser',
+                data: formData,
+          success: function(data) {
+            if(data.status=='1')
+            alert('注册失败'+data.message);
+            if(data.status=='0')
+            alert('注册成功')
+          },
+          error: function(error) {
+            alert('注册失败');
+          }
+             })
+        })
+        //登录
+        $('#login').on('submit',function(e){
+             e.preventDefault();
+             var formData=$('#login').serialize();
+             $.ajax({
+                type:'POST',
+                url: 'http://localhost:3007/api/login',
+          data: formData,
+          success: function(data) {
+             if(data.status==0)
+             {
+            alert('登陆成功');}
+            $('#result').text(data.username);
+            if(data.status==1)
+            alert('登陆失败');
+          },
+          error: function(error) {
+            alert('登陆失败');
+          }
+             })
+        })
+       
+        //获取用户基本信息
+        $('#get').on('click',function(e)
+        {
+        var token='Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJhZG1pbjEyMyIsInBhc3N3b3JkIjoiIiwibmlja25hbWUiOm51bGwsImVtYWlsIjpudWxsLCJ1c2VyX3BpYyI6IiIsImlhdCI6MTY4MTkwNDk4NiwiZXhwIjoxNjgxOTQwOTg2fQ.m6NKO6J1ymCmAQU1bPaghrf_LPMQExlxGNcO9W__KaU'
+         $.ajax({
+                type:'GET',
+                url: 'http://localhost:3007/my/userinfo',
+                headers:{
+                  Authorization:token
+                },
+                
+          success: function(e) {
+             $('#results').text(e.data.username);
+             
+          },
+          error: function(error) {
+            alert('获取用户信息失败');
+          }
+             })
+        })
+        //更新用户信息
+        $('#up').on('click',function(e)
+        {
+         e.preventDefault()
+         var formData=$('#update').serialize();
+        var token='Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJhZG1pbjEyMyIsInBhc3N3b3JkIjoiIiwibmlja25hbWUiOiJscngiLCJlbWFpbCI6IjIzMjc3MDUyNjNAcXEuY29tIiwidXNlcl9waWMiOiIiLCJpYXQiOjE2ODE5NzU2OTQsImV4cCI6MTY4MjAxMTY5NH0.70JwNXgwtHPerxYlETaC7RrUhooM5pkvxtnAiE1U7I0'
+         $.ajax({
+                type:'POST',
+                url: 'http://localhost:3007/my/userinfo',
+                headers:{
+                  Authorization:token
+                },
+                data:formData,
+          success: function(e) {
+            
+            if(e.status==0)
+            alert(e.message)
+             else{
+               alert('更新用户信息失败')
+             }
+          },
+          error: function(error) {
+            alert('更新用户信息失败');
+          }
+             })
+        })
+        //更换头像
+        $('#file').on('change',function(e){
+        e.preventDefault()
+        
+         const file=e.target.files[0];
+         var img = document.querySelector('img');
+             const reader=new FileReader();
+            function onload()
+            {
+              return new Promise(function(resolve,reject)
+              {
+                reader.addEventListener('load',function ()
+                {
+               img.src = reader.result;
+                  
+               //vartar=reader.result;
+                 //var varURL=reader.result
+                 //console.log(varURL)
+                 //var varURL='data:image/png;base64,VE9PTUFOWVNFQ1JFVFM='
+                 var varURL=reader.result.split(',')[1];
+                 varURL='data:image/png;base64,'+varURL
+                 console.log(varURL)
+                 resolve(varURL);
+                
+               reject('err')
+                  },false);
+
+              })  
+            }
+         onload().then(function(a)
+            {
+              console.log(a)
+             
+              var token='Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJhZG1pbjEyMyIsInBhc3N3b3JkIjoiIiwibmlja25hbWUiOiIyMTUiLCJlbWFpbCI6IjEzMTY2Nzg1MTRAcXEuY29tIiwidXNlcl9waWMiOiIiLCJpYXQiOjE2ODIwNjEzNzQsImV4cCI6MTY4MjA5NzM3NH0.J4rTbhdGmngAEmbbg8SpPmDjDwl97ccWps8B07YIaho'
+         $.ajax({
+                type:'POST',
+                url: 'http://localhost:3008/my/update/avatar',
+                headers:{
+                  Authorization:token
+                },
+                data:{
+                  avatar: a
+                },
+               
+          success: function(e) {
+             if(e.status==0)
+             alert('更换成功')
+             else
+             alert('更换1');
+          },
+          error: function(error) {
+            alert('更换失败2');
+          }
+             })
+              return a;
+             
+            }).catch(function(a)
+            {
+              console.log(a)
+            });
+
+            reader.readAsDataURL(file);
+            
+       
+
+   
+              
+      
+     })
+    </script>
+</body>
+</html>
