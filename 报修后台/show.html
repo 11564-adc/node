@@ -172,13 +172,14 @@
     $('#last').on('click', function () {
         loadData(maxPage);
     })
-    //是否完成
+    //是否解决
     $(document).on('click', 'input[type="checkbox"]', function (e) {
         var solve = $(this).prop('checked');
         console.log(solve)
         //获得用户名
-        var username = e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
-
+        //var username = e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
+         var username=e.target.parentNode.parentNode.firstChild.textContent;
+         console.log(username)
         $.ajax({
             type: 'POST',
             url: 'http://localhost:8080/solved',
@@ -198,8 +199,8 @@
     //删除记录
     $('#your_table').on('click', 'button', function (e) {
         //获得用户名
-        var username = e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
-
+        //var username = e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
+        var username=e.target.parentNode.parentNode.firstChild.textContent;
 
         console.log(username)
         $.ajax({
