@@ -7,7 +7,7 @@ const app = express()
 app.use(cors());
 //数据库
 const mysql=require('mysql');
-const { error } = require('@hapi/joi/lib/base');
+const { error, result } = require('@hapi/joi/lib/base');
 const db=mysql.createPool({
   host:'127.0.0.1',
   user:'root',
@@ -73,10 +73,34 @@ app.get('/getCount',(req,res)=>{
     res.send({total});  
     
   })
-  
+ 
 })
 
 })
+ //柱状图
+ app.get('/account',(req,res)=>{
+  const sql='SELECT xh,count(xh) FROM `baoxiu` GROUP BY xh'
+  db.query(sql,(error,results)=>
+       {
+    if(error)
+    res.send({message:error.message})
+    else
+    {
+      const xhArray = [];
+      const countArray = [];
+      for (let i = 0; i < results.length; i++) {
+        xhArray.push(results[i].xh);
+        countArray.push(results[i]['count(xh)']);
+      }
+      res.send({
+        xh: xhArray,
+        count: countArray
+      });
+    }
+    
+        })
+   
+      })
 //是否完成
 app.post('/solved',(req,res)=>{
   const sql='UPDATE baoxiu SET solve=? WHERE username=?'
