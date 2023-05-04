@@ -67,16 +67,6 @@
                 }
 
                 // 在左侧绘制y轴刻度标记和数据
-                // for (var j = 0; j <= 5; j++) {
-                //     var text = Math.round(maxData * (5 - j) / 5);
-                //     var y = 50 + j * 60;
-                //     context.fillText(text, 25, y + 5);
-                //     context.beginPath();
-                //     context.moveTo(50, y);
-                //     context.lineTo(45, y);
-                //     context.stroke();
-                // }
-                // 在左侧绘制y轴刻度标记和数据
                 for (var j = 0; j <= step; j++) {
                     var value = unitValue * j;
                     var y = 350 - value * scale;

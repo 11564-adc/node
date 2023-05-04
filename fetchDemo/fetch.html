@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>提交表单并显示数据</title>
+    <script src="../jquery.min.js"></script>
+  </head>
+  <body>
+    <form id="my-form">
+      <label>用户名：</label>
+      <input type="text" name="username"><br><br>
+      <label>密码：</label>
+      <input type="password" name="password"><br><br>
+      <button type="submit">提交</button>
+    </form>
+    <script>
+      const form = document.getElementById('my-form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault(); // 阻止表单默认提交动作
+        const data = new FormData(form); // 将表单数据封装成FormData对象
+        console.log(data)
+        var a=$('#my-form').serialize();
+        console.log(a)
+        fetch('http://localhost:8080/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+  },
+          body: a
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.username);
+        })
+        .catch(error => console.error(error));
+      });
+    </script>
+  </body>
+</html>

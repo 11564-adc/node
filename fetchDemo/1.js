@@ -11,9 +11,12 @@ app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   
-  const result = `Username: ${username} , Password: ${password}`;
+  console.log(username)
   
-  res.send(result);
+  res.send({
+    'username':username,
+    'password':password,
+  });
 })
 
 app.listen(8080, () => console.log('Server Started on http://localhost:8080'))

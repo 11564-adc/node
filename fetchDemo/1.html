@@ -22,10 +22,17 @@
  
   <script>
     
-    $(document).ready(function() {
+    $(document).ready(function() 
+    {
       $('form').on('submit', function(event) {
         event.preventDefault();
         var formData = $('form').serialize();
+        console.log(formData)
+        const url= 'http://localhost:8080/login';
+        const options={
+          method:'POST',
+          body:formData,
+        };
         $.ajax({
           type: 'POST',
           url: 'http://localhost:8080/login',
@@ -37,8 +44,23 @@
             alert('Error: ' + error);
           }
         });
-      });
+      //   fetch(url,options)
+      //   .then(response=>{
+      //     if(!response.ok)
+      //     {
+      //       throw new Error('Network response was no ok');
+      //     }
+      //     return response.json();
+      //   })
+      //   .then(data=>{
+          
+      //     console.log(data)
+      //   })
+      //   .catch(error=>
+      //   console.error(error));
+      // });
     });
+  })
   </script>
 
 </body>
