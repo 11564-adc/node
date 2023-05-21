@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>重置密码</title>
+    <script src="../jquery.min.js"></script>
+    <style>
+      /* 设置body的背景颜色 */
+      body {
+        background-color: #f2f2f2;
+      }
+      
+      /* 设置h1的样式 */
+      h1 {
+        margin-top: 20px;
+        margin-bottom: 30px;
+        text-align: center;
+        font-size: 24px;
+        color: #333;
+      }
+      
+      /* 设置form的样式 */
+      form {
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 20px;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      
+      /* 设置input和label的样式 */
+      label, input[type="password"], input[type="submit"], input[type="reset"] {
+        display: block;
+        margin-bottom: 20px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      
+      label {
+        font-size: 16px;
+        font-weight: bold;
+        color: #666;
+        margin-bottom: 10px;
+      }
+      
+      input[type="password"] {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      
+      input[type="submit"], input[type="reset"] {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        padding: 12px 0;
+        cursor: pointer;
+      }
+      
+      input[type="submit"]:hover, input[type="reset"]:hover {
+        background-color: #3e8e41;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>重置密码</h1>
+    <form id="resetpwd">
+      <label for="oldpassword">原密码：</label>
+      <input type="password" id="oldpassword" name="oldpassword">
+      
+      <label for="newpassword">新密码：</label>
+      <input type="password" id="newpassword" name="newpassword">
+      
+      <label for="confirmpassword">确认新密码：</label>
+      <input type="password" id="confirmpassword" name="confirmpassword">
+      
+      <input type="submit" value="修改密码">
+      <input type="reset" value="重置">
+    </form>
+  </body>
+  <script>
+    $("#resetpwd").on("submit",function(e){
+      e.preventDefault()
+      var oldPwd=document.getElementById("oldpassword").value;
+      console.log(oldPwd)
+      var newPwd=document.getElementById("newpassword").value;
+      var confirmpassword=document.getElementById("confirmpassword").value;
+      if(newPwd!=confirmpassword)
+      {
+        alert("新密码不一致")
+      }
+      else{
+        $.ajax({
+       
+        
+       type: 'POST',
+       url: 'http://localhost:3007/my/Mupdatapwd',
+       headers : {Authorization:localStorage.getItem("token")},
+       data: {
+         "oldPwd":oldPwd,
+         "newPwd":newPwd,
+       },
+       success: function(data) {
+         alert(data.message+"请重新登录");
+         localStorage.removeItem("token")
+         localStorage.removeItem("username");
+         window.parent.location.href="../reapir/login.html";
+       },
+       error: function(error) {
+         alert('Error: ' + error);
+       }
+   
+   })
+      }
+      
+    })
+  </script>
+</html>

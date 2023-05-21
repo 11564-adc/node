@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Upload</title>
+    <script src="../jquery.min.js"></script>
+    <style>
+        /* 样式部分 */
+        body {
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 100px;
+            height: 100vh;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        .btn-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .upload-btn {
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-right: 10px;
+        }
+        .upload-btn:hover {
+            background-color: #f5f5f5;
+        }
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .submit-btn:hover {
+            background-color: #0069d9;
+        }
+        /* 隐藏文件选择框 */
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">更换头像</div>
+        <img id="avatar" src="../sample.jpg"/>
+        <div class="btn-group">
+            <label class="upload-btn" for="upload-input">上传</label>
+            <input type="file" id="upload-input" accept="image/*"/>
+            <button class="submit-btn" id="submit-btn">确定</button>
+        </div>
+    </div>
+    <script>
+        $(function(){
+             //头像
+    $.ajax({
+       type: 'POST',
+       url: 'http://localhost:3007/userImg',
+       headers : {Authorization:localStorage.getItem("token")},
+       success: function(data) {
+        console.log(data.img)
+           var a=document.getElementById("avatar");
+          // console.log(img.src)
+           a.src=data.img["user_pic"]
+       },
+       error: function(error) {
+         alert('Error: ' + error);
+       }
+   
+   })
+        })
+        // JavaScript 部分
+        const avatar = document.getElementById("avatar");
+        const uploadInput = document.getElementById("upload-input");
+        const submitBtn = document.getElementById("submit-btn");
+         
+        // 点击上传按钮时触发文件选择框
+        uploadInput.addEventListener("change", (event) => {
+           const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                avatar.src = url;
+            }
+        });
+
+        // 点击确定按钮时执行保存操作
+        submitBtn.addEventListener("click", (e) => {
+              //更换头像
+      
+        e.preventDefault()
+        const file=uploadInput.files[0];
+       
+         var img = document.querySelector('img');
+             const reader=new FileReader();
+            function onload()
+            {
+              return new Promise(function(resolve,reject)
+              {
+                reader.addEventListener('load',function ()
+                {
+               img.src = reader.result;
+                  
+          
+                 var varURL=reader.result.split(',')[1];
+                 varURL='data:image/png;base64,'+varURL
+                 console.log(varURL)
+                 resolve(varURL);
+                
+               reject('err')
+                  },false);
+
+              })  
+            }
+         
+            onload().then(function(a)
+            {
+              console.log(a)
+             
+             //向后端发请求
+         $.ajax({
+                type:'POST',
+                url: 'http://localhost:3007/my/update/avatar',
+                headers:{
+                  Authorization:localStorage.getItem("token")
+                },
+                data:{
+                  avatar: a
+                },
+               
+          success: function(e) {
+             if(e.status==0){
+             alert('更换成功');
+             window.parent.getElementById("userImg").src=a;
+             }
+             else
+             alert('更换失败，请重试');
+          },
+          error: function(error) {
+            alert('更换失败');
+          }
+             })
+
+
+              return a;
+             
+            }).catch(function(a)
+            {
+              console.log(a)
+            });
+
+            reader.readAsDataURL(file);
+     })
+      
+    </script>
+</body>
+</html>

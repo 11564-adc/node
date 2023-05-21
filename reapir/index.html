@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="jquery.min.js"></script>
+    <script src="../jquery.min.js"></script>
 </head>
 <body>
     登录
@@ -57,7 +57,7 @@
             alert('注册成功')
           },
           error: function(error) {
-            alert('注册失败');
+            alert('用户名或密码不符合要求');
           }
              })
         })
@@ -72,8 +72,11 @@
           success: function(data) {
              if(data.status==0)
              {
-            alert('登陆成功');}
+            alert('登陆成功');
             $('#result').text(data.username);
+            //生成的token存储起来
+            localStorage.setItem("token",data.token)
+             }
             if(data.status==1)
             alert('登陆失败');
           },
@@ -86,12 +89,12 @@
         //获取用户基本信息
         $('#get').on('click',function(e)
         {
-        var token='Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJhZG1pbjEyMyIsInBhc3N3b3JkIjoiIiwibmlja25hbWUiOm51bGwsImVtYWlsIjpudWxsLCJ1c2VyX3BpYyI6IiIsImlhdCI6MTY4MTkwNDk4NiwiZXhwIjoxNjgxOTQwOTg2fQ.m6NKO6J1ymCmAQU1bPaghrf_LPMQExlxGNcO9W__KaU'
+        
          $.ajax({
                 type:'GET',
                 url: 'http://localhost:3007/my/userinfo',
                 headers:{
-                  Authorization:token
+                  Authorization:localStorage.getItem("token")
                 },
                 
           success: function(e) {
@@ -108,12 +111,12 @@
         {
          e.preventDefault()
          var formData=$('#update').serialize();
-        var token='Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJhZG1pbjEyMyIsInBhc3N3b3JkIjoiIiwibmlja25hbWUiOiJscngiLCJlbWFpbCI6IjIzMjc3MDUyNjNAcXEuY29tIiwidXNlcl9waWMiOiIiLCJpYXQiOjE2ODE5NzU2OTQsImV4cCI6MTY4MjAxMTY5NH0.70JwNXgwtHPerxYlETaC7RrUhooM5pkvxtnAiE1U7I0'
+        
          $.ajax({
                 type:'POST',
                 url: 'http://localhost:3007/my/userinfo',
                 headers:{
-                  Authorization:token
+                  Authorization:localStorage.getItem("token")
                 },
                 data:formData,
           success: function(e) {
@@ -143,11 +146,6 @@
                 reader.addEventListener('load',function ()
                 {
                img.src = reader.result;
-                  
-               //vartar=reader.result;
-                 //var varURL=reader.result
-                 //console.log(varURL)
-                 //var varURL='data:image/png;base64,VE9PTUFOWVNFQ1JFVFM='
                  var varURL=reader.result.split(',')[1];
                  varURL='data:image/png;base64,'+varURL
                  console.log(varURL)
@@ -162,12 +160,12 @@
             {
               console.log(a)
              
-              var token='Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJhZG1pbjEyMyIsInBhc3N3b3JkIjoiIiwibmlja25hbWUiOiIyMTUiLCJlbWFpbCI6IjEzMTY2Nzg1MTRAcXEuY29tIiwidXNlcl9waWMiOiIiLCJpYXQiOjE2ODIwNjEzNzQsImV4cCI6MTY4MjA5NzM3NH0.J4rTbhdGmngAEmbbg8SpPmDjDwl97ccWps8B07YIaho'
+             
          $.ajax({
                 type:'POST',
                 url: 'http://localhost:3008/my/update/avatar',
                 headers:{
-                  Authorization:token
+                  Authorization:localStorage.getItem("token")
                 },
                 data:{
                   avatar: a

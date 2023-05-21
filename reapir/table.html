@@ -6,46 +6,195 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../jquery.min.js"></script>
-    <title>Document</title>
+    <link rel="stylesheet" href="./bootstrap.css">
+    <title>表格</title>
     <style>
+  /*数据统计*/
+.spannel_list{
+    margin-top:20px;
+}
+
+.spannel{
+	height:100px;
+	overflow:hidden;
+	text-align:center;
+    position:relative;
+    background-color: #fff;
+    border:1px solid #e7e7e9;
+    margin-bottom:20px;
+}
+
+.spannel em{
+    font-style:normal;
+	font-size:50px;
+	line-height:50px;
+	display:inline-block;
+	margin:10px 0 0 20px;
+	font-family:'Arial';
+	color:#83a2ed;
+}
+
+.spannel span{
+	font-size:14px;
+	display:inline-block;
+	color:#83a2ed;
+	margin-left:10px;
+}
+
+.spannel b{
+	position:absolute;
+	left:0;
+	bottom:0;
+	width:100%;
+	line-height:24px;
+	background:#e5e5e5;
+	color:#333;
+	font-size:14px;
+	font-weight:normal;
+}
+.scolor01 em,.scolor01 span{
+	color:#6ac6e2;
+}
+
+.scolor02 em,.scolor02 span{
+	color:#5fd9de;
+}
+
+.scolor03 em,.scolor03 span{
+	color:#58d88e;
+}
+      /*表格样式*/
         table {
             border: 3px solid;
             border-collapse: collapse;
         }
 
-        table tr,
-        th,
-        td {
-            border: 1px solid;
+        #your_table {
+            float: left;
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
 
+        table {
+            border: 3px solid;
+            border-collapse: collapse;
+        }
 
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #e6e6e6;
+        }
+
+        /*按钮*/
+        button {
+            background-color: #fff;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+            color: #007bff;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 12px 32px;
+            transition: all 0.2s;
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background-color: #007bff;
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:active {
+            transform: translateY(0px);
+            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .but {
+            margin-top: px;
+            text-align: center;
+        }
+
+        .but button {
+            margin-right: 15px;
         }
     </style>
 </head>
 
 <body>
-    <table id="your_table">
 
-    </table>
-    <button id="first">第一页</button>
-    <button id="past">上一页</button>
-    <button id="next">下一页</button>
+    <div class="spannel_list">
+        <div class="col-sm-3 col-xs-6">
+            <div class="spannel">
+                <em id="total">10015</em><span>台</span>
+                <b>总维修数</b>
+            </div>
+        </div>
+    </div>
+        <div class="col-sm-3 col-xs-6">
+            <div class="spannel scolor01">
+                <em id="most">123</em><span></span>
+                <b>维修最多</b>
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <div class="spannel scolor02">
+                <em id="solved">35</em><span>台</span>
+                <b>已解决</b>
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <div class="spannel scolor03">
+                <em id="unsolved">123</em><span>台</span>
+                <b>未解决</b>
+            </div>
+        </div>
+        <table id="your_table">
 
-    <button id="last">最后一页</button>
+        </table>
+        <div class="but">
+            <button id="first">第一页</button>
+            <button id="past">上一页</button>
+            <button id="next">下一页</button>
+
+            <button id="last">最后一页</button>
+        </div>
+
 </body>
 <script>
     //页面基本情况
     let pageNum = 1;
-    const pageSize = 2;
+    const pageSize = 7;
     let maxPage = 1;
     $(function () {
+       
         //初始化列名
-
         $('#your_table').append('<tr><th>' + "用户名" + '</th>' + '<th>' + "电话" + '</th>' + '<th>' + "报修时间" + '</th>' + '<th>' + "型号" + '</th>' + '<th>' + "问题" + '</th>' + '<th>' + "是否解决" + '</th>' + '<th>' + '删除' + '</th>' + '</tr>');
         $.ajax(
             {
                 type: 'GET',
-                url: 'http://localhost:8080/show',
+                url: 'http://localhost:3007/show',
                 success: function (data) {
 
                     data.forEach(function (item) {
@@ -84,7 +233,7 @@
         $.ajax(
             {
                 type: 'GET',
-                url: 'http://localhost:8080/getCount',
+                url: 'http://localhost:3007/getCount',
                 success: function (data) {
                     maxPage = Math.ceil(data.total / pageSize);
                     //console.log(maxPage)
@@ -93,7 +242,26 @@
                     alert('获得总页码失败')
                 }
             })
-
+        //获得报修数据
+        var total=document.getElementById("total");
+        var most=document.getElementById("most");
+        var solved=document.getElementById("solved");
+        var unsolved=document.getElementById("unsolved");
+        $.ajax(
+            {
+                type: 'GET',
+                url: 'http://localhost:3007/showData',
+                success: function (data) {
+                    total.textContent=data[0]['total'];
+                    most.textContent=data[0]['@xh'];
+                    
+                    solved.textContent=data[0]['solved'];
+                    unsolved.textContent=data[0]['unsolved'];
+                },
+                error: function () {
+                    alert('获得报修数据失败')
+                }
+            })
     })
 
     //重新加载表格内容
@@ -102,7 +270,7 @@
         const start = (pageNum - 1) * pageSize; // 起始记录数
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:8080/newdata',
+            url: 'http://localhost:3007/newdata',
             data: {
                 Num: pageNum,
                 Size: pageSize,
@@ -178,11 +346,11 @@
         console.log(solve)
         //获得用户名
         //var username = e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
-         var username=e.target.parentNode.parentNode.firstChild.textContent;
-         console.log(username)
+        var username = e.target.parentNode.parentNode.firstChild.textContent;
+        console.log(username)
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:8080/solved',
+            url: 'http://localhost:3007/solved',
             data: {
                 solve: solve,
                 username: username
@@ -199,13 +367,13 @@
     //删除记录
     $('#your_table').on('click', 'button', function (e) {
         //获得用户名
-        //var username = e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
-        var username=e.target.parentNode.parentNode.firstChild.textContent;
+
+        var username = e.target.parentNode.parentNode.firstChild.textContent;
 
         console.log(username)
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:8080/delete',
+            url: 'http://localhost:3007/delete',
             data: {
                 username: username
             },

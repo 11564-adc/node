@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../jquery.min.js"></script>
+    <link rel="stylesheet" href="./bootstrap.css">
+    <title>表格</title>
+    <style>
+  /*数据统计*/
+.spannel_list{
+    margin-top:20px;
+}
+
+.spannel{
+	height:100px;
+	overflow:hidden;
+	text-align:center;
+    position:relative;
+    background-color: #fff;
+    border:1px solid #e7e7e9;
+    margin-bottom:20px;
+}
+
+.spannel em{
+    font-style:normal;
+	font-size:50px;
+	line-height:50px;
+	display:inline-block;
+	margin:10px 0 0 20px;
+	font-family:'Arial';
+	color:#83a2ed;
+}
+
+.spannel span{
+	font-size:14px;
+	display:inline-block;
+	color:#83a2ed;
+	margin-left:10px;
+}
+
+.spannel b{
+	position:absolute;
+	left:0;
+	bottom:0;
+	width:100%;
+	line-height:24px;
+	background:#e5e5e5;
+	color:#333;
+	font-size:14px;
+	font-weight:normal;
+}
+.scolor01 em,.scolor01 span{
+	color:#6ac6e2;
+}
+
+.scolor02 em,.scolor02 span{
+	color:#5fd9de;
+}
+
+.scolor03 em,.scolor03 span{
+	color:#58d88e;
+}
+      /*表格样式*/
+        table {
+            border: 3px solid;
+            border-collapse: collapse;
+        }
+
+        #your_table {
+            float: left;
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            border: 3px solid;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #e6e6e6;
+        }
+
+        /*按钮*/
+        button {
+            background-color: #fff;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+            color: #007bff;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 12px 32px;
+            transition: all 0.2s;
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background-color: #007bff;
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:active {
+            transform: translateY(0px);
+            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .but {
+            margin-top: px;
+            text-align: center;
+        }
+
+        .but button {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="spannel_list">
+        <div class="col-sm-3 col-xs-6">
+            <div class="spannel">
+                <em id="total">10015</em><span>台</span>
+                <b>总报名</b>
+            </div>
+        </div>
+    </div>
+        <div class="col-sm-3 col-xs-6">
+            <div class="spannel scolor01">
+                <em id="most">123</em><span></span>
+                <b>报名最多</b>
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <div class="spannel scolor02">
+                <em id="solved">35</em><span>台</span>
+                <b>已联系</b>
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <div class="spannel scolor03">
+                <em id="unsolved">123</em><span>台</span>
+                <b>未联系</b>
+            </div>
+        </div>
+        <table id="your_table">
+
+        </table>
+        <div class="but">
+            <button id="first">第一页</button>
+            <button id="past">上一页</button>
+            <button id="next">下一页</button>
+
+            <button id="last">最后一页</button>
+        </div>
+
+</body>
+<script>
+    //页面基本情况
+    let pageNum = 1;
+    const pageSize = 7;
+    let maxPage = 1;
+    $(function () {
+       
+        //初始化列名
+        $('#your_table').append('<tr><th>' + "姓名" + '</th>' + '<th>' + "电话" + '</th>' + '<th>' + "提交时间" + '</th>' + '<th>' + "年级专业" + '</th>' + '<th>' + "个人情况" + '</th>'+'<th>'+"方向"+'</th>' + '<th>' + "是否联系" + '</th>' + '<th>' + '删除' + '</th>' + '</tr>');
+        $.ajax(
+            {
+                type: 'GET',
+                url: 'http://localhost:3007/showApp',
+                success: function (data) {
+
+                    data.forEach(function (item) {
+                        // 创建tr元素并添加数据
+                        var tr = document.createElement('tr');
+                        tr.innerHTML = '<td>' + item.name + '</td>' + '<td>' + item.tel + '</td>' + '<td>' + item.time + '</td>' + '<td>' + item.grade + '</td>' + '<td>' + item.introduce + '</td>'+'<td>'+item.xh+'</td>';
+
+                        // 创建复选框元素并添加到td元素中
+                        var checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        if (item.connect == '1') {
+                            checkbox.checked = true;
+
+                        } else {
+                            checkbox.checked = false;
+
+                        }
+                        var td = document.createElement('td');
+                        td.appendChild(checkbox);
+                        tr.appendChild(td);
+                        //添加删除按钮
+                        var de = document.createElement('button');
+                        de.innerHTML = '删除';
+                        var td1 = document.createElement('td');
+                        td1.appendChild(de);
+                        tr.appendChild(td1)
+                        // 将tr元素添加到表格中
+                        $('#your_table').append(tr);
+                    });
+                },
+                error: function () {
+                    alert('获取表格失败')
+                }
+            });
+        //获得总页码数量
+        $.ajax(
+            {
+                type: 'GET',
+                url: 'http://localhost:3007/getCountApp',
+                success: function (data) {
+                    maxPage = Math.ceil(data.total / pageSize);
+                    //console.log(maxPage)
+                },
+                error: function () {
+                    alert('获得总页码失败')
+                }
+            })
+        //获得申请数据
+        var total=document.getElementById("total");
+        var most=document.getElementById("most");
+        var solved=document.getElementById("solved");
+        var unsolved=document.getElementById("unsolved");
+        $.ajax(
+            {
+                type: 'GET',
+                url: 'http://localhost:3007/showDataApp',
+                success: function (data) {
+                    total.textContent=data[0]['total'];
+                    most.textContent=data[0]['@xh'];
+                    
+                    solved.textContent=data[0]['solved'];
+                    unsolved.textContent=data[0]['unsolved'];
+                },
+                error: function () {
+                    alert('获得申请数据失败')
+                }
+            })
+    })
+
+    //重新加载表格内容
+    function loadData(pageNum) {
+
+        const start = (pageNum - 1) * pageSize; // 起始记录数
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3007/newdataApp',
+            data: {
+                Num: pageNum,
+                Size: pageSize,
+            },
+            success: function (data) {
+                $('#your_table').empty();
+                //初始化列名
+
+                $('#your_table').append('<tr><th>' + "名字" + '</th>' + '<th>' + "电话" + '</th>' + '<th>' + "申请时间" + '</th>' + '<th>' + "年级专业" + '</th>' + '<th>' + "个人介绍" + '</th>'+'<th>'+"方向"+'</th>' + '<th>' + "是否联系" + '</th>' + '<th>' + '删除' + '</th>' + '</tr>');
+
+                data.forEach(function (item) {
+                    // 创建tr元素并添加数据
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + item.name + '</td>' + '<td>' + item.tel + '</td>' + '<td>' + item.time + '</td>' + '<td>' + item.grade + '</td>' + '<td>' + item.introduce + '</td>'+'<td>'+item.xh+'</td>';
+
+                    // 创建复选框元素并添加到td元素中
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    if (item.connect == '1') {
+                        checkbox.checked = true;
+                    } else {
+                        checkbox.checked = false;
+                    }
+                    //添加删除按钮
+                    var de = document.createElement('button');
+                    de.innerHTML = '删除';
+                    de.value = "删除"
+                    var td = document.createElement('td');
+                    td.appendChild(checkbox);
+
+                    tr.appendChild(td);
+                    var td1 = document.createElement('td');
+                    td1.appendChild(de);
+                    tr.appendChild(td1)
+                    // 将tr元素添加到表格中
+                    $('#your_table').append(tr);
+                });
+            },
+            error: function () {
+                alert('获取表格失败')
+            }
+
+        })
+    }
+    //下一页
+    $('#next').on('click', function () {
+        if (pageNum < maxPage)
+            pageNum++;
+        //console.log(pageNum)
+        loadData(pageNum)
+
+    })
+    //上一页
+    $('#past').on('click', function () {
+        if (pageNum > 1)
+            pageNum--;
+        //console.log(pageNum)
+        loadData(pageNum)
+    })
+    //第一页
+    $('#first').on('click', function () {
+        loadData(1);
+    })
+    //最后一页
+    $('#last').on('click', function () {
+        loadData(maxPage);
+    })
+    //是否解决
+    $(document).on('click', 'input[type="checkbox"]', function (e) {
+        var solve = $(this).prop('checked');
+        console.log(solve)
+        //获得用户名
+        //var username = e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
+        var username = e.target.parentNode.parentNode.firstChild.textContent;
+        console.log(username)
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3007/solvedApp',
+            data: {
+                solve: solve,
+                username: username
+            },
+            success: function (res) {
+
+
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        })
+    })
+    //删除记录
+    $('#your_table').on('click', 'button', function (e) {
+        //获得用户名
+
+        var username = e.target.parentNode.parentNode.firstChild.textContent;
+
+        console.log(username)
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3007/deleteApp',
+            data: {
+                username: username
+            },
+            success: function (res) {
+                confirm('删除成功')
+                loadData(pageNum)
+
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        })
+    })
+</script>
+
+</html>

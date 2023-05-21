@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		canvas{border:1px solid red;}
+	</style>
+</head>
+<body>
+	<canvas width="700px" height="400px" id="cas"></canvas>
+	<script type="text/javascript">
+		function toAngle( radian ){
+			return radian * 180 / Math.PI;
+		}
+		function toRadian( angle ){
+			return angle * Math.PI / 180;
+		}
+		var cas = document.getElementById("cas");
+		var c1 = cas.getContext("2d");
+		var colors = "#0080FF,#FF9326,#A64DFF,#FF00FF,#008C69".split(","),
+			x0 = 300,
+			y0 = 200,
+			r = 100,
+			startR = -90; //起始角度
+		var data1 = [11,50,40,100,80];//数据
+		//计算数据总和
+		var sum = 0;
+		data1.forEach(function( v ){			
+			sum += v;
+		})
+		//根据提供的数据 转换成新的数据
+		var data2 = data1.map(function( v ){
+			return { value: v, angle: v * 360 / sum };
+		})
+		//定义文本的位置和偏移量
+		var textX,textY,textOffset = 30,textLine,paddingX = 40;
+		//设置文本的字号和字体
+		c1.font = "20px Consolas";
+		//循环遍历新的数据绘制饼形图
+		data2.forEach(function( v , i){
+			//绘制饼形
+			c1.beginPath();
+			c1.fillStyle = colors[ i ];
+			c1.moveTo( x0, y0 );
+			c1.arc( x0,y0,r,toRadian( startR ),toRadian( startR + v.angle ));
+			c1.fill();
+
+			//绘制文字
+			c1.beginPath();
+			c1.strokeStyle = colors[i];
+			c1.textAlign = "center";
+
+			// 计算文字坐标
+			textX = x0 + ( r + 50 ) * Math.cos(toRadian( startR + v.angle / 2));
+			textY = y0 + ( r + 50 ) * Math.sin(toRadian( startR + v.angle / 2));
+			c1.moveTo( x0, y0 );
+			c1.lineTo( textX, textY );
+			
+			//判断文字的长度
+			textLine = c1.measureText( (sum / v.value).toFixed(4) ).width + paddingX;
+
+			//判断左右饼形分别设置对齐方式
+			if( startR + v.angle / 2 < 270 && startR + v.angle / 2 > 90 ){
+				c1.lineTo(textX - textLine, textY );
+				c1.fillText( ( v.value / sum * 100 ).toFixed( 4 ) +'%', textX - textLine / 2, textY - 5 );
+			}else{
+				c1.lineTo(textX + textLine, textY );
+				c1.fillText( ( v.value / sum * 100 ).toFixed( 4 ) +'%', textX + textLine / 2, textY - 5 );
+			}
+			c1.stroke();
+			startR += v.angle;
+		})
+
+		//饼形图外圈
+		c1.beginPath();
+		c1.lineWidth = 2;
+		c1.strokeStyle = 'rgba(0,0,0,.1)';
+		c1.arc( x0,y0,r+5,0,2*Math.PI);
+		c1.stroke();
+	</script>
+</body>
+</html>

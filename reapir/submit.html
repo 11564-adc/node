@@ -27,7 +27,7 @@
         var formData = $('form').serialize();
         $.ajax({
           type: 'POST',
-          url: 'http://localhost:8080/login',
+          url: 'http://localhost:3007/repair',
           data: formData,
           success: function(data) {
             alert('Received: ' + data.message);
